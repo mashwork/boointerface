@@ -1,5 +1,12 @@
 {
-    "db": "mongodb://localhost/mean-test",
+    "db": "mongodb://localhost/boo-test",
+    "elasticOptions": {
+        "host": "localhost",
+        "port": 9200,
+        "secure": false,
+        "index": "bool",
+        "type": "object"
+    },
     "port": 3001,
     "app": {
         "name": "MEAN - A Modern Stack - Test"

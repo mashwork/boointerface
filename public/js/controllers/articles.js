@@ -1,52 +1,51 @@
-angular.module('mean.articles').controller('ArticlesController', ['$scope', '$routeParams', '$location', 'Global', 'Articles', function ($scope, $routeParams, $location, Global, Articles) {
+angular.module('mean.articles').controller('ObjectsShowController', ['$scope', '$routeParams', '$location', 'Global', 'Objects', function ($scope, $routeParams, $location, Global, Objects) {
     $scope.global = Global;
 
-    $scope.create = function() {
-        var article = new Articles({
-            title: this.title,
-            content: this.content
-        });
-        article.$save(function(response) {
-            $location.path("articles/" + response._id);
-        });
+    $scope.obj = { referenceNames: [] };
 
-        this.title = "";
-        this.content = "";
+    $scope.editMode = true;
+    $scope.addMode = false;
+
+    console.log("$routeParams.id = %j", $routeParams.id);
+    if($routeParams.id) {
+        console.log("$routeParams.id = %j", $routeParams.id)
+        Objects.get({id: $routeParams.id}, function(objectData){ 
+            $scope.obj = objectData.obj;
+            console.log("objectData = %j", objectData);
+            console.log("$scope.obj = %j", $scope.obj);
+        }); 
+    }
+
+    
+    $scope.addReferenceName = function () {
+        $scope.addingMode = true;
+        $scope.addedRefName = "";
     };
 
-    $scope.remove = function(article) {
-        article.$remove();  
+    $scope.saveNewRef = function () {
+        $scope.obj.referenceNames.push($scope.addedRefName);
+        $scope.addingMode = false;
+    };
 
-        for (var i in $scope.articles) {
-            if ($scope.articles[i] == article) {
-                $scope.articles.splice(i, 1);
-            }
+    $scope.saveObject = function () {
+
+        console.log("the obj = %j", $scope.obj);
+
+        function objResponse(responseObj) {
+            $location.path('/objects');
         }
-    };
 
-    $scope.update = function() {
-        var article = $scope.article;
-        if (!article.updated) {
-            article.updated = [];
+        if ($routeParams.id){
+            Objects.update({id: $routeParams.id}, $scope.obj, objResponse);
+        }else{
+            Objects.save($scope.obj, objResponse);
         }
-        article.updated.push(new Date().getTime());
+    }
+}]);
 
-        article.$update(function() {
-            $location.path('articles/' + article._id);
-        });
-    };
-
-    $scope.find = function() {
-        Articles.query(function(articles) {
-            $scope.articles = articles;
-        });
-    };
-
-    $scope.findOne = function() {
-        Articles.get({
-            articleId: $routeParams.articleId
-        }, function(article) {
-            $scope.article = article;
-        });
-    };
+angular.module('mean.articles').controller('ObjectsIndexController', ['$scope', '$routeParams', '$location', 'Global', 'Objects', function ($scope, $routeParams, $location, Global, Objects) {
+    $scope.global = Global;
+    Objects.query({}, function (objectsData) {
+        $scope.objects = objectsData.objs;
+    });
 }]);

@@ -1,0 +1,43 @@
+<section data-ng-controller="ObjectsShowController">
+	<div class="form-horizontal">
+
+		<div class="control-group">
+			<label class="control-label" for="title">Name</label>
+			<div class="controls">
+				<input ng-show="editMode" type="text" data-ng-model="obj.name" id="name" placeholder="Name" required>
+				<div ng-hide="editMode">{{obj.name}}</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="content">Boolean</label>
+			<div class="controls">
+				<textarea ng-show="editMode" data-ng-model="obj.boolean" id="boolean" cols="30" rows="10" placeholder="Boolean"></textarea>
+				<div ng-hide="editMode">{{obj.boolean}}</div>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="content">Reference Names</label>
+			
+			<div class="controls">
+				<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
+				<div ng-show="addingMode">
+					<input data-ng-model="addedRefName" id="addedRefName"></input>
+					<button ng-click="saveNewRef()">Save</button>
+				</div>
+			</div>
+
+			<div class="controls" ng-repeat="refName in obj.referenceNames">
+				<div class="controls">
+					<div>{{refName}}</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="controls">
+				<button ng-click="saveObject()">Save Object</button>
+			</div>
+		</div>
+	</div>
+</section>

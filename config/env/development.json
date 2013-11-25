@@ -1,5 +1,10 @@
 {
-    "db": "mongodb://localhost/mean-dev",
+    "db": "mongodb://localhost/boo-dev",
+    "elasticOptions": {
+        "host": "localhost",
+        "port": 9200,
+        "secure": false
+    },
     "app": {
         "name": "MEAN - A Modern Stack - Development"
     },
