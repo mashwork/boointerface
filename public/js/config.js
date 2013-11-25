@@ -1,12 +1,12 @@
 //Setting up route
 window.app.config(['$routeProvider',
     function($routeProvider) {
-        $routeProvider.
-        when('/objects',                    { templateUrl: 'views/objects/list.html' }).
-        when('/objects/create',             { templateUrl: 'views/objects/view.html' }).
-        when('/objects/:id',          { templateUrl: 'views/objects/view.html' }).
-        when('/',                           { templateUrl: 'views/index.html' }).
-        otherwise({ redirectTo: '/' });
+        $routeProvider
+            .when('/objects',       { templateUrl: 'views/objects/list.html' })
+            .when('/objects/create', { templateUrl: 'views/objects/view.html' })
+            .when('/object/:id',    { templateUrl: 'views/objects/view.html' })
+            .when('/',              { templateUrl: 'views/index.html' })
+            .otherwise({ redirectTo: '/' });
     }
 ]);
 

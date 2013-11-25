@@ -1,9 +1,9 @@
 <section data-ng-controller="ObjectsIndexController">
+	>
 	<ul >
 		<li data-ng-repeat="object in objects">
-			<span>{{object.name}}</span>
-			<h2><a data-ng-href="#!/objects/{{object._id}}">{{object._id}}</a></h2>
+			<h2><a data-ng-href="#!/object/{{object._id}}">{{object.name}}</a></h2>
 		</li>
 	</ul>
-	<h1 data-ng-hide="!articles || articles.length">No articles yet. <br> Why don't you <a href="/#!/articles/create">Create One</a>?</h1>
+	<a href="/#!/objects/create">Create Object</a>
 </section>

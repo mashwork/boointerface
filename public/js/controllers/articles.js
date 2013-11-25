@@ -1,19 +1,24 @@
 angular.module('mean.articles').controller('ObjectsShowController', ['$scope', '$routeParams', '$location', 'Global', 'Objects', function ($scope, $routeParams, $location, Global, Objects) {
     $scope.global = Global;
-
-    $scope.obj = { referenceNames: [] };
-
-    $scope.editMode = true;
     $scope.addMode = false;
+    $scope.idView = !!$routeParams.id;
 
     console.log("$routeParams.id = %j", $routeParams.id);
     if($routeParams.id) {
+        $scope.editMode = false;
         console.log("$routeParams.id = %j", $routeParams.id)
         Objects.get({id: $routeParams.id}, function(objectData){ 
             $scope.obj = objectData.obj;
             console.log("objectData = %j", objectData);
             console.log("$scope.obj = %j", $scope.obj);
         }); 
+    }else{
+        $scope.obj = { referenceNames: [] };
+        $scope.editMode = true;
+    }
+
+    $scope.editToggle = function () {
+        $scope.editMode = !$scope.editMode;  
     }
 
     
