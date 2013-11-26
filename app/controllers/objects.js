@@ -8,16 +8,16 @@ var mongoose = require('mongoose'),
     Reference = mongoose.model('Reference'),
     async = require("async");
 
-function createNewReferencesAndObjects (fromId, referenceNames, callback) {
+function createNewReferencesAndObjects (toId, referenceNames, callback) {
 	async.map(
 		referenceNames,
 		function (refName, iterCallback) {
 			Obj.findOne({name: refName}, function (err, obj) {
 				if (obj) {
-					Reference.create({from:fromId, to: obj._id}, iterCallback)
+					Reference.create({to: toId, from: obj._id}, iterCallback)
 				} else {
 					Obj.create({name: refName}, function (err, newObj) { 
-						Reference.create({from:fromId, to: newObj._id}, iterCallback);
+						Reference.create({to: toId, from: newObj._id}, iterCallback);
 					});
 				}
 			});
@@ -27,20 +27,22 @@ function createNewReferencesAndObjects (fromId, referenceNames, callback) {
 };
 
 exports.create = function(req, res) {
-	createNewReferencesAndObjects(
-		req.body._id,
-		req.body.referenceNames,
-		function (objs, err) {
-			delete req.body.referenceNames;
-			Obj.create(req.body, function (err, obj) {
-				res.json({response: obj});
-    		});
-		}
-	);
+	console.log("req.body = %j", req.body);
+	var refNames = req.body.referenceNames;
+	delete req.body.referenceNames
+	Obj.create(req.body, function (err, obj) {
+		createNewReferencesAndObjects(
+			obj._id,
+			refNames,
+			function (objs, err) {
+				res.json({obj: obj});
+			}
+		);
+	});
 };
 
 exports.destroy = function(req, res) {
-	Reference.remove({from: req.objectId}, function (err) {
+	Reference.remove({$or: [ { to: req.objectId }, { from: req.objectId } ] }, function (err) {
 		Obj.remove({_id: req.objectId}, function (err) {
 			res.json({});
 		});
@@ -48,7 +50,7 @@ exports.destroy = function(req, res) {
 };
 
 exports.update = function (req, res) {
-	Reference.delete({from: req.objectId}, function (err) {
+	Reference.delete({to: req.objectId}, function (err) {
 		createNewReferencesAndObjects(
 			req.body._id,
 			req.body.referencesNames,
@@ -68,10 +70,19 @@ exports.update = function (req, res) {
 
 exports.show = function (req, res) {
 	console.log("show = %j", req.objectId)
-  Obj.findOne({_id: req.objectId }, function(err, obj) {
-    if (err) { return res.status(404).json(false); }
-    res.json({obj: obj});
-  });
+	Obj.findOne({_id: req.objectId })
+		.lean()
+		.exec(function(err, obj) {
+		Reference.find({to: req.objectId})
+			.lean()
+			.populate('from')
+			.exec(function (err, references) {
+				if (err) { return res.status(404).json(false); }
+				obj.references = references;
+				console.log("obj = %j", obj);
+				res.json({obj: obj});
+			});
+	});
 };
 
 exports.all = function (req, res) {

@@ -1,8 +1,8 @@
 <section data-ng-controller="ObjectsIndexController">
-	>
-	<ul >
+	<ul>
 		<li data-ng-repeat="object in objects">
 			<h2><a data-ng-href="#!/object/{{object._id}}">{{object.name}}</a></h2>
+			<button ng-click="deleteObject(object)">Delete Object</button>
 		</li>
 	</ul>
 	<a href="/#!/objects/create">Create Object</a>

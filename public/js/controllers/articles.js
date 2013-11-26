@@ -53,4 +53,10 @@ angular.module('mean.articles').controller('ObjectsIndexController', ['$scope', 
     Objects.query({}, function (objectsData) {
         $scope.objects = objectsData.objs;
     });
+
+    $scope.deleteObject = function (object) {
+        Objects.delete({id: object._id}, function () {
+            console.log("deleted object");
+        })
+    }
 }]);

@@ -18,7 +18,7 @@
 		</div>
 
 		<div class="control-group">
-			<label class="control-label" for="content">Reference Names</label>
+			<label class="control-label" for="content">Referenced By</label>
 			
 			<div class="controls">
 				<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
@@ -28,10 +28,10 @@
 				</div>
 			</div>
 
-			<div class="controls" ng-repeat="refName in obj.referenceNames">
-				<div class="controls">
-					<div>{{refName}}</div>
-				</div>
+			<div ng-repeat="ref in obj.references">
+				<ul class="controls">
+					<li><a data-ng-href="#!/object/{{ref.from._id}}">{{ref.from.name}}</a></li>
+				</ul>
 			</div>
 		</div>
 
