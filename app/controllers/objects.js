@@ -99,8 +99,6 @@ exports.all = function (req, res) {
 };
 
 exports.search = function (req, res) {
-
-
 	var query = url.parse(req.url, true).query;
 	console.log("query = %j", query);
 	Obj.search(

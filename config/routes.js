@@ -72,6 +72,13 @@ module.exports = function(app, passport, auth) {
     //Finish with setting up the articleId param
     app.param('objectId', objects.object);
 
+    //Object Routes
+    var references = require('../app/controllers/references');
+    app.del('/references/:referenceId', references.destroy);
+
+    //Finish with setting up the articleId param
+    app.param('referenceId', references.reference);
+
     //Home route
     var index = require('../app/controllers/index');
     app.get('/', index.render);

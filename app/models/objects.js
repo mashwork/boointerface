@@ -19,8 +19,6 @@ var ObjectSchema = new Schema({
 
 ObjectSchema.plugin(elmongo);
 
-
-
 var Objects = mongoose.model('Object', ObjectSchema);
 
 Objects.sync(function (err) {

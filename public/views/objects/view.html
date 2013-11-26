@@ -33,6 +33,7 @@
 				
 					<li ng-hide="ref._id">{{ref.name}}</li>
 					<li ng-show="ref._id"><a data-ng-href="#!/object/{{ref._id}}">{{ref.name}}</a></li>
+					<button ng-click="removeReference(ref)">Remove Ref</button>
 				</div>
 			</ul>
 			

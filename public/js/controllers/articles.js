@@ -1,22 +1,25 @@
-angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$scope', '$routeParams', '$location', 'Global', 'Objects', function ($http, $scope, $routeParams, $location, Global, Objects) {
+angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$scope', '$routeParams', '$location', 'Global', 'Objects', 'Reference', function ($http, $scope, $routeParams, $location, Global, Objects, Reference) {
     $scope.global = Global;
     $scope.addMode = false;
     $scope.idView = !!$routeParams.id;
     $scope.autocomplete = [];
 
     console.log("$routeParams.id = %j", $routeParams.id);
-    if($routeParams.id) {
-        $scope.editMode = false;
-        console.log("$routeParams.id = %j", $routeParams.id)
-        Objects.get({id: $routeParams.id}, function(objectData){ 
-            $scope.obj = objectData.obj;
-            console.log("objectData = %j", objectData);
-            console.log("$scope.obj = %j", $scope.obj);
-        }); 
-    }else{
-        $scope.obj = { references: [] };
-        $scope.editMode = true;
+
+    function setupObject () {
+        if($routeParams.id) {
+            $scope.editMode = false;
+            Objects.get({id: $routeParams.id}, function(objectData){ 
+                $scope.obj = objectData.obj;
+            }); 
+        }else{
+            $scope.obj = $scope.obj || {};
+            $scope.editMode = true;
+        }
     }
+
+    setupObject();
+    
 
     $scope.editToggle = function () {
         $scope.editMode = !$scope.editMode;  
@@ -29,6 +32,7 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
     };
 
     $scope.saveNewRef = function () {
+        $scope.obj.references  = $scope.obj.references || [];
         var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName; });
         if(chosen){
             $scope.obj.references.push(chosen);
@@ -46,6 +50,10 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
             $scope.autocomplete = _.pluck(objectsData.objs.hits, "_source");
             callback(_.pluck($scope.autocomplete, "name")); // This will automatically open the popup with retrieved results
         });
+    }
+
+    $scope.removeReference = function (ref) {
+        $scope.obj.references = _.reject($scope.obj.references, function (reference) { return reference.name === ref.name; })
     }
 
     $scope.saveObject = function () {
