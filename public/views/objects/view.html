@@ -23,7 +23,7 @@
 			<div class="controls">
 				<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
 				<div ng-show="addingMode">
-					<input data-ng-model="addedRefName" id="addedRefName"></input>
+					<input type="text" data-ng-model="addedRefName" id="addedRefName" bs-typeahead="typeaheadFn"></input>
 					<button ng-click="saveNewRef()">Save</button>
 				</div>
 			</div>

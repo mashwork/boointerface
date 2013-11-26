@@ -3,6 +3,7 @@
  */
 var mongoose = require('mongoose'),
     config = require('../../config/config'),
+    elmongo = require('elmongo'),
     Schema = mongoose.Schema;
 
 
@@ -10,11 +11,18 @@ var mongoose = require('mongoose'),
  * Object Schema
  */
 var ObjectSchema = new Schema({
-    name: { type: String, unique: true, trim: true, index : "text" },
+    name: { type: String, unique: true, trim: true, autocomplete: true },
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
     boolean: { type: String, default: ''}
 });
 
+ObjectSchema.plugin(elmongo);
 
-mongoose.model('Object', ObjectSchema);
+
+
+var Objects = mongoose.model('Object', ObjectSchema);
+
+Objects.sync(function (err) {
+	console.log("data ready");
+})

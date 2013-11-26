@@ -6,7 +6,8 @@ var mongoose = require('mongoose'),
     _ = require('underscore'),
     Obj = mongoose.model('Object'),
     Reference = mongoose.model('Reference'),
-    async = require("async");
+    async = require("async"),
+    url = require('url');
 
 function createNewReferencesAndObjects (toId, referenceNames, callback) {
 	async.map(
@@ -86,10 +87,29 @@ exports.show = function (req, res) {
 };
 
 exports.all = function (req, res) {
-  Obj.find({}, function(err, objs) {
-    if (err) { return res.status(404).json(false); }
-    return res.json({objs: objs});
-  });
+	var query = url.parse(req.url, true).query;
+	Obj.find({})
+		.limit(query.limit)
+		.exec(function(err, objs) {
+			if (err) { return res.status(404).json(false); }
+			return res.json({objs: objs});
+		});
+};
+
+exports.search = function (req, res) {
+
+
+	var query = url.parse(req.url, true).query;
+	console.log("query = %j", query);
+	Obj.search(
+		{query: query.term, fields: [ 'name' ], page: 1, pageSize: query.limit}, 
+		function(err, objs) {
+			objs.hits
+			console.log("err = %j", err);
+			console.log("objs = %j", objs);
+			if (err) { return res.status(404).json(false); }
+			return res.json({objs: objs});
+		});
 };
 
 /**

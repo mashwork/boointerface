@@ -1,4 +1,4 @@
-angular.module('mean.articles').controller('ObjectsShowController', ['$scope', '$routeParams', '$location', 'Global', 'Objects', function ($scope, $routeParams, $location, Global, Objects) {
+angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$scope', '$routeParams', '$location', 'Global', 'Objects', function ($http, $scope, $routeParams, $location, Global, Objects) {
     $scope.global = Global;
     $scope.addMode = false;
     $scope.idView = !!$routeParams.id;
@@ -31,6 +31,17 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$scope', '
         $scope.obj.referenceNames.push($scope.addedRefName);
         $scope.addingMode = false;
     };
+
+    $scope.typeaheadFn = function(query, callback) {
+        console.log("typahead started");
+        $http.get('/object_search?term=' + query + "&limit=5").success(function(objectsData) {
+            console.log("objectsData = %j", objectsData);
+            console.log("objectsData.objs.hits = %j", objectsData.objs.hits);
+            console.log("_.chain(objectsData.objs.hits).pluck('_source').pluck('name').value() = %j", _.chain(objectsData.objs.hits).pluck('_source').pluck('name').value());
+
+            callback(_.chain(objectsData.objs.hits).pluck("_source").pluck("name").value()); // This will automatically open the popup with retrieved results
+        });
+    }
 
     $scope.saveObject = function () {
 

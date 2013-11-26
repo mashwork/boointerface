@@ -59,10 +59,11 @@ module.exports = function(app, passport, auth) {
 
     //Finish with setting up the userId param
     app.param('userId', users.user);
-    
+
     //Object Routes
     var objects = require('../app/controllers/objects');
     app.get('/objects',  objects.all);
+    app.get('/object_search',  objects.search);
     app.post('/objects', objects.create);
     app.get('/objects/:objectId', objects.show);
     app.put('/objects/:objectId', objects.update);
