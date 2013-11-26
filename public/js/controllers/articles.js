@@ -2,6 +2,7 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
     $scope.global = Global;
     $scope.addMode = false;
     $scope.idView = !!$routeParams.id;
+    $scope.autocomplete = [];
 
     console.log("$routeParams.id = %j", $routeParams.id);
     if($routeParams.id) {
@@ -13,7 +14,7 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
             console.log("$scope.obj = %j", $scope.obj);
         }); 
     }else{
-        $scope.obj = { referenceNames: [] };
+        $scope.obj = { references: [] };
         $scope.editMode = true;
     }
 
@@ -28,25 +29,26 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
     };
 
     $scope.saveNewRef = function () {
-        $scope.obj.referenceNames.push($scope.addedRefName);
+        var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName; });
+        if(chosen){
+            $scope.obj.references.push(chosen);
+        }else{
+            if(confirm('This is a new object which will be created when you save.  Are you okay with this?')){
+                $scope.obj.references.push({name: $scope.addedRefName});
+            }
+        }
+        
         $scope.addingMode = false;
     };
 
     $scope.typeaheadFn = function(query, callback) {
-        console.log("typahead started");
         $http.get('/object_search?term=' + query + "&limit=5").success(function(objectsData) {
-            console.log("objectsData = %j", objectsData);
-            console.log("objectsData.objs.hits = %j", objectsData.objs.hits);
-            console.log("_.chain(objectsData.objs.hits).pluck('_source').pluck('name').value() = %j", _.chain(objectsData.objs.hits).pluck('_source').pluck('name').value());
-
-            callback(_.chain(objectsData.objs.hits).pluck("_source").pluck("name").value()); // This will automatically open the popup with retrieved results
+            $scope.autocomplete = _.pluck(objectsData.objs.hits, "_source");
+            callback(_.pluck($scope.autocomplete, "name")); // This will automatically open the popup with retrieved results
         });
     }
 
     $scope.saveObject = function () {
-
-        console.log("the obj = %j", $scope.obj);
-
         function objResponse(responseObj) {
             $location.path('/objects');
         }
@@ -61,13 +63,19 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
 
 angular.module('mean.articles').controller('ObjectsIndexController', ['$scope', '$routeParams', '$location', 'Global', 'Objects', function ($scope, $routeParams, $location, Global, Objects) {
     $scope.global = Global;
-    Objects.query({}, function (objectsData) {
-        $scope.objects = objectsData.objs;
-    });
+
+    function refreshObjects() {
+        Objects.query({}, function (objectsData) {
+            $scope.objects = objectsData.objs;
+        });
+    }
+    
+    refreshObjects();
 
     $scope.deleteObject = function (object) {
         Objects.delete({id: object._id}, function () {
             console.log("deleted object");
+            refreshObjects();
         })
     }
 }]);

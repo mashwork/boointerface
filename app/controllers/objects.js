@@ -29,8 +29,8 @@ function createNewReferencesAndObjects (toId, referenceNames, callback) {
 
 exports.create = function(req, res) {
 	console.log("req.body = %j", req.body);
-	var refNames = req.body.referenceNames;
-	delete req.body.referenceNames
+	var refNames = _.pluck(req.body.references, "name");
+	delete req.body.references
 	Obj.create(req.body, function (err, obj) {
 		createNewReferencesAndObjects(
 			obj._id,
@@ -51,12 +51,14 @@ exports.destroy = function(req, res) {
 };
 
 exports.update = function (req, res) {
-	Reference.delete({to: req.objectId}, function (err) {
+	console.log("req = %j", req.body);
+	console.log("req.objectId = %j", req.objectId);
+	Reference.remove({to: req.objectId}, function (err) {
 		createNewReferencesAndObjects(
 			req.body._id,
-			req.body.referencesNames,
+			_.pluck(req.body.references, "name"),
 			function (objs, err) {
-				delete req.body.referencesNames;
+				delete req.body.references;
 				Obj.findByIdAndUpdate(
 					req.objectId, 
 					{ $set: req.body }, 
@@ -79,7 +81,7 @@ exports.show = function (req, res) {
 			.populate('from')
 			.exec(function (err, references) {
 				if (err) { return res.status(404).json(false); }
-				obj.references = references;
+				obj.references = _.pluck(references, "from");
 				console.log("obj = %j", obj);
 				res.json({obj: obj});
 			});
