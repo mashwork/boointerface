@@ -54,7 +54,11 @@ function chart (nodes, links) {
       .enter().append("text")
         .attr("x", 8)
         .attr("y", ".31em")
-        .text(function(d) { return d.name; });
+        .text(function(d) { return d.name; })
+        .on('click', function (d) { 
+            console.log("location should go to = #!/object/" + d.id);
+            window.location.href = "#!/object/" + d.id;
+        });
 
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
@@ -107,10 +111,3 @@ function visualizeData (func) {
         }
     }
 };
-
-
-
-
-
-
-

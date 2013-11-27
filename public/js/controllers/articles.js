@@ -59,8 +59,10 @@ angular.module('mean.articles').controller('ObjectsShowController', [
                 $location.path('/objects');
             }
 
+            
+
             if ($routeParams.id){
-                Objects.update({id: $routeParams.id}, $scope.obj, objResponse);
+                Objects.update({id: $routeParams.id}, _.omit($scope.obj, '_id'), objResponse);
             }else{
                 Objects.save($scope.obj, objResponse);
             }
@@ -84,18 +86,24 @@ angular.module('mean.articles').controller('ObjectsIndexController', [
         function refreshObjects() {
             Objects.query({}, function (objectsData) {
                 var allObjects = objectsData.objs;
-                    Reference.query({}, function (refData) {
+                Reference.query({}, function (refData) {
                     $scope.data = {};
                     $scope.data.nodes = _.reduce(
                         allObjects,
                         function (aggObj, obj) {
-                            aggObj[obj.name] = { name: obj.name };
+                            aggObj[obj.name] = { id: obj._id, name: obj.name };
                             return aggObj;
                         },
                         {}
                     );
-                    $scope.data.links = _.map(refData.references, function (link) {return {source: link.to.name, target: link.from.name, type: "is"}; });
-                })
+                    console.log("refData.references = %j" ,refData.references);
+                    console.log("$scope.data.links = %j" ,$scope.data.links);
+
+                    $scope.data.links = _.map(refData.references, function (link) {
+                        console.log("link = %j", link);
+                        return {source: link.to.name, target: link.from.name, type: "is"}; 
+                    });
+                });
             });
         }
 
