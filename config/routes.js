@@ -74,6 +74,7 @@ module.exports = function(app, passport, auth) {
 
     //Object Routes
     var references = require('../app/controllers/references');
+    app.get('/references', references.fullReferences);
     app.del('/references/:referenceId', references.destroy);
 
     //Finish with setting up the articleId param

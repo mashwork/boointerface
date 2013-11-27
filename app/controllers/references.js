@@ -4,11 +4,25 @@
 
 var mongoose = require('mongoose'),
     Reference = mongoose.model('Reference');
-    
+
 exports.destroy = function(req, res) {
 	Reference.remove({_id: req.referenceId}, function (err) {
 		res.json({});
 	});
+};
+
+/**
+ * Find article by id
+ */
+exports.fullReferences = function(req, res) {
+	Reference.find({})
+		.lean()
+		.populate('from')
+		.populate('to')
+		.exec( function (err, refs) {
+			console.log("refs = %j", refs)
+			res.json({references: refs});
+		});
 };
 
 /**
@@ -24,3 +38,5 @@ exports.reference = function(req, res, next, id) {
         next();
     });
 };
+
+

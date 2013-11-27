@@ -1,5 +1,11 @@
 <section data-ng-controller="ObjectsIndexController">
-	<table class="controls table table-condensed">
+
+	<a href="/#!/objects/create">Create Object</a><br/><br/><br/>
+
+	<label class="control-label" for="term">Search</label>
+	<input type="text" data-ng-model="term" id="term" ng-change="searchObjects()"></input>
+
+	<table ng-show="objects" class="controls table table-condensed">
 		<thead>
 			<tr>
 				<th>Objects</th>
@@ -13,5 +19,6 @@
 			</tr>
 		</tbody>
 	</table>
-	<a href="/#!/objects/create">Create Object</a>
+
+	<chart-viz val="data"></chart-viz>
 </section>

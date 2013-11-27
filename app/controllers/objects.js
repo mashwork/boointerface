@@ -72,20 +72,18 @@ exports.update = function (req, res) {
 };
 
 exports.show = function (req, res) {
-	console.log("show = %j", req.objectId)
 	Obj.findOne({_id: req.objectId })
 		.lean()
 		.exec(function(err, obj) {
-		Reference.find({to: req.objectId})
-			.lean()
-			.populate('from')
-			.exec(function (err, references) {
-				if (err) { return res.status(404).json(false); }
-				obj.references = _.pluck(references, "from");
-				console.log("obj = %j", obj);
-				res.json({obj: obj});
-			});
-	});
+			Reference.find({to: req.objectId})
+				.lean()
+				.populate('from')
+				.exec(function (err, references) {
+					if (err) { return res.status(404).json(false); }
+					obj.references = _.pluck(references, "from");
+					res.json({obj: obj});
+				});
+		});
 };
 
 exports.all = function (req, res) {
@@ -100,13 +98,10 @@ exports.all = function (req, res) {
 
 exports.search = function (req, res) {
 	var query = url.parse(req.url, true).query;
-	console.log("query = %j", query);
 	Obj.search(
 		{query: query.term, fields: [ 'name' ], page: 1, pageSize: query.limit}, 
 		function(err, objs) {
 			objs.hits
-			console.log("err = %j", err);
-			console.log("objs = %j", objs);
 			if (err) { return res.status(404).json(false); }
 			return res.json({objs: objs});
 		});
