@@ -32,7 +32,6 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         $scope.saveNewRef = function () {
             $scope.obj.references  = $scope.obj.references || [];
             var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName; });
-            console.log("chosen = %j", chosen);
             if(chosen){
 
                 $scope.obj.references.push(chosen);
@@ -42,8 +41,6 @@ angular.module('mean.articles').controller('ObjectsShowController', [
                 }
             }
 
-            console.log("$scope.obj.references = %j", $scope.obj.references);
-            
             $scope.addingMode = false;
         };
 
@@ -73,7 +70,6 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         //how do i get rid of this duplication
         $scope.deleteObject = function (object) {
             Objects.delete({id: object._id}, function () {
-                console.log("deleted object");
                 $location.path("/objects");
             })
         }
@@ -98,11 +94,8 @@ angular.module('mean.articles').controller('ObjectsIndexController', [
                         },
                         {}
                     );
-                    console.log("refData.references = %j" ,refData.references);
-                    console.log("$scope.data.links = %j" ,$scope.data.links);
 
                     $scope.data.links = _.map(refData.references, function (link) {
-                        console.log("link = %j", link);
                         return {source: link.to.name, target: link.from.name, type: "is"}; 
                     });
                 });
@@ -120,7 +113,6 @@ angular.module('mean.articles').controller('ObjectsIndexController', [
 
         $scope.deleteObject = function (object) {
             Objects.delete({id: object._id}, function () {
-                console.log("deleted object");
                 refreshObjects();
             })
         }
