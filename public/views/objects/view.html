@@ -19,7 +19,7 @@
 	</div>
 
 	<div class="control-group">
-		<div class="controls">
+		<div class="controls" ng-show="editMode || !idView">
 			<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
 			<div ng-show="addingMode">
 				<input type="text" data-ng-model="addedRefName" id="addedRefName" bs-typeahead="typeaheadFn"></input>
@@ -45,8 +45,8 @@
 
 	<div class="control-group">
 		<div class="controls">
-			<button ng-click="saveObject()">Save Object</button>
-			<button ng-show="obj._id" ng-click="deleteObject(obj)">Delete Object</button>
+			<button ng-show="editMode || !idView" ng-click="saveObject()">Save Object</button>
+			<button ng-show="editMode && idView" ng-click="deleteObject(obj)">Delete Object</button>
 		</div>
 	</div>
 
