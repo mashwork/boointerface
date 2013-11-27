@@ -4,17 +4,14 @@
   stroke-width: 1.5px;
 }
 
-#licensing {
+#is {
   fill: green;
 }
 
-.link.licensing {
+.link.is {
   stroke: green;
 }
 
-.link.resolved {
-  stroke-dasharray: 0,2 1;
-}
 
 circle {
   fill: #ccc;

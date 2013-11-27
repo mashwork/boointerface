@@ -25,7 +25,7 @@ function chart (nodes, links) {
 
     // Per-type markers, as they don't inherit styles.
     svg.append("defs").selectAll("marker")
-        .data(["suit", "licensing", "resolved"])
+        .data(["is"])
       .enter().append("marker")
         .attr("id", function(d) { return d; })
         .attr("viewBox", "0 -5 10 10")
