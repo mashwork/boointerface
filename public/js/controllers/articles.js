@@ -32,13 +32,17 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         $scope.saveNewRef = function () {
             $scope.obj.references  = $scope.obj.references || [];
             var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName; });
+            console.log("chosen = %j", chosen);
             if(chosen){
+
                 $scope.obj.references.push(chosen);
             }else{
                 if(confirm('This is a new object which will be created when you save.  Are you okay with this?')){
                     $scope.obj.references.push({name: $scope.addedRefName});
                 }
             }
+
+            console.log("$scope.obj.references = %j", $scope.obj.references);
             
             $scope.addingMode = false;
         };
@@ -58,8 +62,6 @@ angular.module('mean.articles').controller('ObjectsShowController', [
             function objResponse(responseObj) {
                 $location.path('/objects');
             }
-
-            
 
             if ($routeParams.id){
                 Objects.update({id: $routeParams.id}, _.omit($scope.obj, '_id'), objResponse);

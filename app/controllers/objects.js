@@ -28,7 +28,6 @@ function createNewReferencesAndObjects (toId, referenceNames, callback) {
 };
 
 exports.create = function(req, res) {
-	console.log("req.body = %j", req.body);
 	var refNames = _.pluck(req.body.references, "name");
 	delete req.body.references
 	Obj.create(req.body, function (err, obj) {
@@ -51,11 +50,9 @@ exports.destroy = function(req, res) {
 };
 
 exports.update = function (req, res) {
-	console.log("req = %j", req.body);
-	console.log("req.objectId = %j", req.objectId);
 	Reference.remove({to: req.objectId}, function (err) {
 		createNewReferencesAndObjects(
-			req.body._id,
+			req.objectId,
 			_.pluck(req.body.references, "name"),
 			function (objs, err) {
 				delete req.body.references;
@@ -111,9 +108,7 @@ exports.search = function (req, res) {
  * Find article by id
  */
 exports.object = function(req, res, next, id) {
-	console.log(" id = %j", id);
     Obj.findOne({_id: id}, function(err, object) {
-    	console.log("returned object = %j", object);
         if (err) return next(err);
         if (!object) return next(new Error('Failed to load object ' + id));
         req.objectId = object._id;
