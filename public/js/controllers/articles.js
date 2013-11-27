@@ -4,8 +4,6 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
     $scope.idView = !!$routeParams.id;
     $scope.autocomplete = [];
 
-    console.log("$routeParams.id = %j", $routeParams.id);
-
     function setupObject () {
         if($routeParams.id) {
             $scope.editMode = false;
@@ -20,12 +18,10 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
 
     setupObject();
     
-
     $scope.editToggle = function () {
         $scope.editMode = !$scope.editMode;  
     }
 
-    
     $scope.addReferenceName = function () {
         $scope.addingMode = true;
         $scope.addedRefName = "";
@@ -66,6 +62,14 @@ angular.module('mean.articles').controller('ObjectsShowController', ['$http', '$
         }else{
             Objects.save($scope.obj, objResponse);
         }
+    }
+
+    //how do i get rid of this duplication
+    $scope.deleteObject = function (object) {
+        Objects.delete({id: object._id}, function () {
+            console.log("deleted object");
+            $location.path("/objects");
+        })
     }
 }]);
 

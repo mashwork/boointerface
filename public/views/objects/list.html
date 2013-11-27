@@ -1,9 +1,17 @@
 <section data-ng-controller="ObjectsIndexController">
-	<ul>
-		<li data-ng-repeat="object in objects">
-			<h2><a data-ng-href="#!/object/{{object._id}}">{{object.name}}</a></h2>
-			<button ng-click="deleteObject(object)">Delete Object</button>
-		</li>
-	</ul>
+	<table class="controls table table-condensed">
+		<thead>
+			<tr>
+				<th>Objects</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr data-ng-repeat="object in objects">
+				<td ng-hide="ref._id"><a data-ng-href="#!/object/{{object._id}}">{{object.name}}</a></td>
+				<td><button ng-click="deleteObject(object)">Delete Object</button></td>
+			</tr>
+		</tbody>
+	</table>
 	<a href="/#!/objects/create">Create Object</a>
 </section>

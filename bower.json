@@ -12,6 +12,7 @@
         "bootstrap": "latest",
         "angular-strap": "latest",
         "lodash": "latest",
-        "ng-textcomplete": "0.1.4"
+        "ng-textcomplete": "0.1.4",
+        "d3": "latest"
     }
 }

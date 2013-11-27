@@ -16,33 +16,40 @@
 				<div ng-hide="editMode">{{obj.boolean}}</div>
 			</div>
 		</div>
+	</div>
 
-		<div class="control-group">
-			<label class="control-label" for="content">Referenced By</label>
-			
-			<div class="controls">
-				<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
-				<div ng-show="addingMode">
-					<input type="text" data-ng-model="addedRefName" id="addedRefName" bs-typeahead="typeaheadFn"></input>
-					<button ng-click="saveNewRef()">Save</button>
-				</div>
+	<div class="control-group">
+		<div class="controls">
+			<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
+			<div ng-show="addingMode">
+				<input type="text" data-ng-model="addedRefName" id="addedRefName" bs-typeahead="typeaheadFn"></input>
+				<button ng-click="saveNewRef()">Save</button>
 			</div>
-
-			<ul class="controls">
-				<div ng-repeat="ref in obj.references">
-				
-					<li ng-hide="ref._id">{{ref.name}}</li>
-					<li ng-show="ref._id"><a data-ng-href="#!/object/{{ref._id}}">{{ref.name}}</a></li>
-					<button ng-click="removeReference(ref)">Remove Ref</button>
-				</div>
-			</ul>
-			
 		</div>
+		<table ng-show="obj.references" class="controls table table-condensed">
+			<thead>
+				<tr>
+					<th>Referenced By</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="ref in obj.references">
+					<td ng-hide="ref._id">{{ref.name}}</td>
+					<td ng-show="ref._id"><a data-ng-href="#!/object/{{ref._id}}">{{ref.name}}</a></td>
+					<td><button ng-click="removeReference(ref)">Remove Ref</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
-		<div class="control-group">
-			<div class="controls">
-				<button ng-click="saveObject()">Save Object</button>
-			</div>
+	<div class="control-group">
+		<div class="controls">
+			<button ng-click="saveObject()">Save Object</button>
+			<button ng-show="obj._id" ng-click="deleteObject(obj)">Delete Object</button>
 		</div>
 	</div>
+
+	
+
 </section>
