@@ -32,16 +32,16 @@
 
 	<div class="control-group">
 		<div class="controls" ng-show="editMode || !idView">
-			<button ng-hide="addingMode" ng-click="addReferenceName()">Add Reference</button>
-			<div ng-show="addingMode">
-				<input type="text" data-ng-model="addedRefName" id="addedRefName" bs-typeahead="typeaheadFn"></input>
-				<button ng-click="saveNewRef()">Save</button>
+			<button ng-hide="addingMode['from']" ng-click="addReferenceName('from')">Add Belongs Reference</button>
+			<div ng-show="addingMode['from']">
+				<input type="text" data-ng-model="addedRefName['from']" id="addedRefName['from']" bs-typeahead="typeaheadFn"></input>
+				<button ng-click="saveNewRef('from')">Save</button>
 			</div>
 		</div>
 		<table class="controls table table-condensed">
 			<thead>
 				<tr>
-					<th>Referenced By</th>
+					<th>Belongs Reference</th>
 					<th ng-show="editMode || !idView"></th>
 				</tr>
 			</thead>
@@ -49,16 +49,41 @@
 				<tr ng-repeat="ref in obj.from">
 					<td ng-hide="ref._id">{{ref.name}}</td>
 					<td ng-show="ref._id"><a data-ng-href="#!/object/{{ref._id}}">{{ref.name}}</a></td>
-					<td><button ng-show="editMode || !idView" ng-click="removeReference(ref)">Remove Ref</button></td>
+					<td><button ng-show="editMode || !idView" ng-click="removeReference(ref, 'from')">Remove Ref</button></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 
 	<div class="control-group">
+		<div class="controls" ng-show="editMode || !idView">
+			<button ng-hide="addingMode['to']" ng-click="addReferenceName('to')">Add Has Reference</button>
+			<div ng-show="addingMode['to']">
+				<input type="text" data-ng-model="addedRefName['to']" id="addedRefName['to']" bs-typeahead="typeaheadFn"></input>
+				<button ng-click="saveNewRef('to')">Save</button>
+			</div>
+		</div>
+		<table class="controls table table-condensed">
+			<thead>
+				<tr>
+					<th>Has Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="ref in obj.to">
+					<td ng-hide="ref._id">{{ref.name}}</td>
+					<td ng-show="ref._id"><a data-ng-href="#!/object/{{ref._id}}">{{ref.name}}</a></td>
+					<td><button ng-show="editMode || !idView" ng-click="removeReference(ref, 'to')">Remove Ref</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+
+	<div class="control-group">
 		<div class="controls">
 			<button ng-show="editMode || !idView" ng-click="saveObject()">Save Object</button>
-			<button ng-show="editMode && idView" ng-click="deleteObject(obj)">Delete Object</button>
+			<button ng-show="editMode && idView" ng-click="deleteObject(obj, 'to')">Delete Object</button>
 		</div>
 	</div>
 </section>

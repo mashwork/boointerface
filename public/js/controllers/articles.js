@@ -5,6 +5,8 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         $scope.addMode = false;
         $scope.idView = !!$routeParams.id;
         $scope.autocomplete = [];
+        $scope.addedRefName = {};
+        $scope.addingMode = {};
 
         function setupObject () {
             if($routeParams.id) {
@@ -30,35 +32,38 @@ angular.module('mean.articles').controller('ObjectsShowController', [
             $scope.editMode = !$scope.editMode;  
         };
 
-        $scope.addReferenceName = function () {
-            $scope.addingMode = true;
-            $scope.addedRefName = "";
+        $scope.addReferenceName = function (type) {
+            $scope.addingMode[type] = true;
+            $scope.addedRefName[type] = "";
         };
 
-        $scope.saveNewRef = function () {
-            $scope.obj.from  = $scope.obj.from || [];
-            var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName; });
+        $scope.saveNewRef = function (fieldName) {
+
+
+            $scope.obj[fieldName]  = $scope.obj[fieldName] || [];
+            var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName[fieldName]; });
             if(chosen){
 
-                $scope.obj.from.push(chosen);
+                $scope.obj[fieldName].push(chosen);
             }else{
                 if(confirm('This is a new object which will be created when you save.  Are you okay with this?')){
-                    $scope.obj.from.push({name: $scope.addedRefName});
+                    $scope.obj[fieldName].push({name: $scope.addedRefName[fieldName]});
                 }
             }
 
-            $scope.addingMode = false;
+            $scope.addingMode[fieldName] = false;
         };
 
-        $scope.typeaheadFn = function(query, callback) {
+        $scope.typeaheadFn = function(query, callback, field) {
             ObjectSearch.query({term: query, limit: 5}, function (objectsData) {
+
                 $scope.autocomplete = _.pluck(objectsData.objs.hits, "_source");
                 callback(_.pluck($scope.autocomplete, "name")); // This will automatically open the popup with retrieved results
             });
         }
 
-        $scope.removeReference = function (ref) {
-            $scope.obj.from = _.reject($scope.obj.from, function (reference) { return reference.name === ref.name; });
+        $scope.removeReference = function (ref, type) {
+            $scope.obj[type] = _.reject($scope.obj[type], function (reference) { return reference.name === ref.name; });
         }
 
         $scope.saveObject = function () {
@@ -89,6 +94,7 @@ angular.module('mean.articles').controller('ObjectsIndexController', [
     '$scope', '$routeParams', '$location', 'Global', 'Objects', 'ObjectSearch', 'Reference',
     function ($scope, $routeParams, $location, Global, Objects, ObjectSearch, Reference) {
         $scope.global = Global;
+        $scope.term = "";
 
         function refreshObjects() {
             Objects.query({}, function (objectsData) {
