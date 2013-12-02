@@ -7,6 +7,7 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         $scope.autocomplete = [];
         $scope.addedRefName = {};
         $scope.addingMode = {};
+        $scope.types = [{name: "from", full_name: "Belong to"}, {name: "to", full_name: "Has"}];
 
         function setupObject () {
             if($routeParams.id) {
