@@ -10,13 +10,19 @@ angular.module('mean.articles').controller('ObjectsShowController', [
             if($routeParams.id) {
                 $scope.editMode = false;
                 Objects.get({id: $routeParams.id}, function(objectData){ 
+
                     $scope.obj = objectData.obj;
+                    console.log("$scope.obj = %j", $scope.obj);
                 }); 
             }else{
                 $scope.obj = $scope.obj || {};
                 $scope.editMode = true;
             }
         }
+
+        $scope.toggleTwitterBoolean = function () {
+            $scope.toggleTwitterBool = !$scope.toggleTwitterBool;
+        } 
 
         setupObject();
         
@@ -57,12 +63,15 @@ angular.module('mean.articles').controller('ObjectsShowController', [
 
         $scope.saveObject = function () {
             function objResponse(responseObj) {
+                console.log("responseObj = %j", responseObj);
                 $location.path('/objects');
             }
 
             if ($routeParams.id){
+                console.log("$scope.obj = %j", $scope.obj);
                 Objects.update({id: $routeParams.id}, _.omit($scope.obj, '_id'), objResponse);
             }else{
+                console.log("$scope.obj = %j", $scope.obj);
                 Objects.save($scope.obj, objResponse);
             }
         }

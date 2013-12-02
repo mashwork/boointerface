@@ -16,6 +16,18 @@
 				<div ng-hide="editMode">{{obj.boolean}}</div>
 			</div>
 		</div>
+		<br/>
+		<button ng-click="toggleTwitterBoolean()">Twitter Boolean</button>
+		<br/>
+		<div ng-show="toggleTwitterBool" class="control-group">
+			<label class="control-label" for="content">Twitter Boolean Toggle</label>
+			<div class="controls">
+				<textarea ng-show="editMode" data-ng-model="obj.twitter_boolean" id="twitter_boolean" cols="30" rows="10" placeholder="Twitter Boolean"></textarea>
+				<div ng-hide="editMode">{{obj.twitter_boolean}}</div>
+			</div>
+		</div>
+		<br/>
+
 	</div>
 
 	<div class="control-group">
@@ -49,7 +61,4 @@
 			<button ng-show="editMode && idView" ng-click="deleteObject(obj)">Delete Object</button>
 		</div>
 	</div>
-
-	
-
 </section>

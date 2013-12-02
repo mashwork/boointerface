@@ -14,7 +14,8 @@ var ObjectSchema = new Schema({
     name: { type: String, unique: true, trim: true, autocomplete: true },
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
-    boolean: { type: String, default: ''}
+    boolean: { type: String, default: ''},
+    twitter_boolean: { type: String, default: ''}
 });
 
 ObjectSchema.plugin(elmongo);
