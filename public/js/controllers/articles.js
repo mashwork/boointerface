@@ -36,14 +36,14 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         };
 
         $scope.saveNewRef = function () {
-            $scope.obj.references  = $scope.obj.references || [];
+            $scope.obj.from  = $scope.obj.from || [];
             var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName; });
             if(chosen){
 
-                $scope.obj.references.push(chosen);
+                $scope.obj.from.push(chosen);
             }else{
                 if(confirm('This is a new object which will be created when you save.  Are you okay with this?')){
-                    $scope.obj.references.push({name: $scope.addedRefName});
+                    $scope.obj.from.push({name: $scope.addedRefName});
                 }
             }
 
@@ -58,7 +58,7 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         }
 
         $scope.removeReference = function (ref) {
-            $scope.obj.references = _.reject($scope.obj.references, function (reference) { return reference.name === ref.name; });
+            $scope.obj.from = _.reject($scope.obj.from, function (reference) { return reference.name === ref.name; });
         }
 
         $scope.saveObject = function () {
@@ -112,7 +112,6 @@ angular.module('mean.articles').controller('ObjectsIndexController', [
         }
 
         refreshObjects();
-
 
         $scope.searchObjects = function  () {
             ObjectSearch.query({term: $scope.term, limit: 5}, function (objectsData) {
