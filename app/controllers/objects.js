@@ -13,7 +13,6 @@ function createReferncesArray (objId, refType, otherRefType, refObjectArray, cal
 	async.map(
 		refObjectArray,
 		function (refObject, iterCallback) {
-			delete refObject._id;
 			Obj.findOneAndUpdate({name: refObject.name}, refObject, {upsert: true}, function  (err, typeObject) {
 				var refCreateObject = {};
 				refCreateObject[refType] = objId;
@@ -26,6 +25,7 @@ function createReferncesArray (objId, refType, otherRefType, refObjectArray, cal
 }
 
 function createNewReferencesAndObjects (obj, toObjects, fromObjects, callback) {
+	console.log("obj = %j", obj);
 	createReferncesArray(obj._id, "to", "from", fromObjects, function (err, refs) {
 		createReferncesArray(obj._id, "from", "to", toObjects, function (err, moreRefs) {
 			callback(err, refs.concat(moreRefs));
@@ -34,11 +34,13 @@ function createNewReferencesAndObjects (obj, toObjects, fromObjects, callback) {
 };
 
 exports.create = function(req, res) {
-	var fromReferences = req.body.from;
-	var toReferences = req.body.to;
+	var fromReferences = req.body.from || [];
+	var toReferences = req.body.to || [];
 	delete req.body.from;
 	delete req.body.to;
 	Obj.create(req.body, function (err, obj) {
+		console.log("err = %j", err);
+		if (err) { return res.status(404).json(false); }
 		createNewReferencesAndObjects(
 			obj,
 			toReferences,
@@ -70,8 +72,8 @@ exports.update = function (req, res) {
 	removeAllReferences(req.object._id, function (err) {
 		createNewReferencesAndObjects(
 			req.object,
-			req.body.to,
-			req.body.from,
+			req.body.to || [],
+			req.body.from || [],
 			function (err, refs) {
 				delete req.body.from;
 				delete req.body.to;
@@ -131,7 +133,6 @@ exports.search = function (req, res) {
 	Obj.search(
 		{query: query.term, fields: [ 'name' ], page: 1, pageSize: query.limit}, 
 		function(err, objs) {
-			objs.hits
 			if (err) { return res.status(404).json(false); }
 			return res.json({objs: objs});
 		});

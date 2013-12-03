@@ -20,7 +20,6 @@ exports.fullReferences = function(req, res) {
 		.populate('from')
 		.populate('to')
 		.exec( function (err, refs) {
-			console.log("refs = %j", refs)
 			res.json({references: refs});
 		});
 };
@@ -29,9 +28,7 @@ exports.fullReferences = function(req, res) {
  * Find article by id
  */
 exports.reference = function(req, res, next, id) {
-	console.log(" id = %j", id);
     Reference.findOne({_id: id}, function(err, ref) {
-    	console.log("returned ref = %j", ref);
         if (err) return next(err);
         if (!ref) return next(new Error('Failed to load ref ' + id));
         req.referenceId = ref._id;
