@@ -35,7 +35,12 @@
 			<div class="controls" ng-show="editMode || !idView">
 				<button ng-hide="addingMode[type.name]" ng-click="addReferenceName(type.name)">Add {{type.full_name}}</button>
 				<div ng-show="addingMode[type.name]">
-					<input type="text" data-ng-model="addedRefName[type.name]" id="addedRefName[type.name]" bs-typeahead="typeaheadFn"></input>
+					<label>Node Name</label>
+					<input type="text" data-ng-model="addedRef[type.name].name" id="addedRef[type.name].name" bs-typeahead="typeaheadFn"></input>
+					<label>Boolean</label>
+					<input type="text" data-ng-model="addedRef[type.name].boolean" id="addedRef[type.name].boolean"></input>
+					<label>Twitter Boolean</label>
+					<input type="text" data-ng-model="addedRef[type.name].twitter_boolean" id="addedRef[type.name].twitter_boolean"></input>
 					<button ng-click="saveNewRef(type.name)">Save</button>
 				</div>
 			</div>
@@ -43,6 +48,9 @@
 				<thead>
 					<tr>
 						<th>{{type.full_name}} Reference</th>
+						<th>Boolean</th>
+						<th>Twitter Boolean</th>
+
 						<th ng-show="editMode || !idView"></th>
 					</tr>
 				</thead>
@@ -50,6 +58,9 @@
 					<tr ng-repeat="ref in obj[type.name]">
 						<td ng-hide="ref._id">{{ref.name}}</td>
 						<td ng-show="ref._id"><a data-ng-href="#!/object/{{ref._id}}">{{ref.name}}</a></td>
+						<td>{{ref.boolean}}</td>
+						<td>{{ref.twitter_boolean}}</td>
+
 						<td><button ng-show="editMode || !idView" ng-click="removeReference(ref, type.name)">Remove Ref</button></td>
 					</tr>
 				</tbody>

@@ -5,7 +5,7 @@ angular.module('mean.articles').controller('ObjectsShowController', [
         $scope.addMode = false;
         $scope.idView = !!$routeParams.id;
         $scope.autocomplete = [];
-        $scope.addedRefName = {};
+        $scope.addedRef = {};
         $scope.addingMode = {};
         $scope.types = [{name: "from", full_name: "Belong to"}, {name: "to", full_name: "Has"}];
 
@@ -35,20 +35,21 @@ angular.module('mean.articles').controller('ObjectsShowController', [
 
         $scope.addReferenceName = function (type) {
             $scope.addingMode[type] = true;
-            $scope.addedRefName[type] = "";
+            $scope.addedRef[type] = {};
+            $scope.addedRef[type].name = "";
         };
 
         $scope.saveNewRef = function (fieldName) {
 
 
             $scope.obj[fieldName]  = $scope.obj[fieldName] || [];
-            var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRefName[fieldName]; });
+            var chosen = _.find($scope.autocomplete, function (autoElement) {return autoElement.name === $scope.addedRef[fieldName].name; });
             if(chosen){
 
                 $scope.obj[fieldName].push(chosen);
             }else{
                 if(confirm('This is a new object which will be created when you save.  Are you okay with this?')){
-                    $scope.obj[fieldName].push({name: $scope.addedRefName[fieldName]});
+                    $scope.obj[fieldName].push($scope.addedRef[fieldName]);
                 }
             }
 

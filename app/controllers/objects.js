@@ -9,11 +9,12 @@ var mongoose = require('mongoose'),
     async = require("async"),
     url = require('url');
 
-function findOrCreateObjectBy(createQuery, callback) {
-	Obj.findOne(createQuery, function (err, obj) {
+function findOrCreateObjectByName(createQuery, callback) {
+	Obj.findOne({name: createQuery.name}, function (err, obj) {
 		if (obj) {
 			callback(err, obj);
 		} else {
+			delete createQuery._id;
 			Obj.create(createQuery, function (err, newObj) { 
 				callback(err, newObj);
 			});
@@ -21,11 +22,11 @@ function findOrCreateObjectBy(createQuery, callback) {
 	});
 }
 
-function createReferncesArray (objId, refType, otherRefType, refNameArray, callback) {
+function createReferncesArray (objId, refType, otherRefType, refObjectArray, callback) {
 	async.map(
-		refNameArray,
-		function (refName, iterCallback) {
-			findOrCreateObjectBy({name: refName}, function  (err, typeObject) {
+		refObjectArray,
+		function (refObject, iterCallback) {
+			findOrCreateObjectByName(refObject, function  (err, typeObject) {
 				var refCreateObject = {};
 				refCreateObject[refType] = objId;
 				refCreateObject[otherRefType] = typeObject._id;
@@ -36,24 +37,24 @@ function createReferncesArray (objId, refType, otherRefType, refNameArray, callb
 	);
 }
 
-function createNewReferencesAndObjects (obj, toNames, fromNames, callback) {
-	createReferncesArray(obj._id, "to", "from", fromNames, function (err, refs) {
-		createReferncesArray(obj._id, "from", "to", toNames, function (err, moreRefs) {
+function createNewReferencesAndObjects (obj, toObjects, fromObjects, callback) {
+	createReferncesArray(obj._id, "to", "from", fromObjects, function (err, refs) {
+		createReferncesArray(obj._id, "from", "to", toObjects, function (err, moreRefs) {
 			callback(err, refs.concat(moreRefs));
 		});
 	});
 };
 
 exports.create = function(req, res) {
-	var fromNames = _.pluck(req.body.from, "name");
-	var toNames = _.pluck(req.body.to, "name");
+	var fromReferences = req.body.from;
+	var toReferences = req.body.to;
 	delete req.body.from;
 	delete req.body.to;
 	Obj.create(req.body, function (err, obj) {
 		createNewReferencesAndObjects(
 			obj,
-			toNames,
-			fromNames,
+			toReferences,
+			fromReferences,
 			function (err, refs) {
 				res.json({obj: obj});
 			}
@@ -77,8 +78,8 @@ exports.update = function (req, res) {
 	removeAllReferences(req.object._id, function (err) {
 		createNewReferencesAndObjects(
 			req.object,
-			_.pluck(req.body.to, "name"),
-			_.pluck(req.body.from, "name"),
+			req.body.to,
+			req.body.from,
 			function (err, refs) {
 				delete req.body.from;
 				delete req.body.to;
@@ -98,6 +99,7 @@ exports.show = function (req, res) {
 	Obj.findOne({_id: req.object._id })
 		.lean()
 		.exec(function(err, obj) {
+			console.log("obj = %j", obj);
 			Reference.find({to: req.object._id})
 				.lean()
 				.populate('from')
@@ -105,6 +107,7 @@ exports.show = function (req, res) {
 					console.log("references = %j", references);
 					if (err) { return res.status(404).json(false); }
 					obj.from = _.pluck(references, "from");
+					
 					Reference.find({from: req.object._id})
 						.lean()
 						.populate('to')
