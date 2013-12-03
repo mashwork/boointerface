@@ -1,5 +1,5 @@
 {
-    "db": "mongodb://localhost/boo",
+    "db": "mongodb://localhost/booda",
     "elasticOptions": {
         "host": "localhost",
         "port": 9200,
