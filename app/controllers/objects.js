@@ -9,24 +9,12 @@ var mongoose = require('mongoose'),
     async = require("async"),
     url = require('url');
 
-function findOrCreateObjectByName(createQuery, callback) {
-	Obj.findOne({name: createQuery.name}, function (err, obj) {
-		if (obj) {
-			callback(err, obj);
-		} else {
-			delete createQuery._id;
-			Obj.create(createQuery, function (err, newObj) { 
-				callback(err, newObj);
-			});
-		}
-	});
-}
-
 function createReferncesArray (objId, refType, otherRefType, refObjectArray, callback) {
 	async.map(
 		refObjectArray,
 		function (refObject, iterCallback) {
-			findOrCreateObjectByName(refObject, function  (err, typeObject) {
+			delete refObject._id;
+			Obj.findOneAndUpdate({name: refObject.name}, refObject, {upsert: true}, function  (err, typeObject) {
 				var refCreateObject = {};
 				refCreateObject[refType] = objId;
 				refCreateObject[otherRefType] = typeObject._id;
@@ -56,7 +44,9 @@ exports.create = function(req, res) {
 			toReferences,
 			fromReferences,
 			function (err, refs) {
-				res.json({obj: obj});
+				Obj.sync(function (err) {
+					res.json({obj: obj});
+				});
 			}
 		);
 	});
@@ -69,7 +59,9 @@ function removeAllReferences (objId, callback) {
 exports.destroy = function(req, res) {
 	removeAllReferences(req.object._id, function (err) {
 		Obj.remove({_id: req.object._id}, function (err) {
-			res.json({});
+			Obj.sync(function (err) {
+				res.json({});
+			});
 		});
 	});
 };
@@ -87,7 +79,9 @@ exports.update = function (req, res) {
 					req.object._id, 
 					{ $set: req.body }, 
 					function (err, obj) {
-						return res.json({response: obj});
+						Obj.sync(function (err) {
+							return res.json({response: obj});
+						});
 					}
 				);
 			}
@@ -107,7 +101,7 @@ exports.show = function (req, res) {
 					console.log("references = %j", references);
 					if (err) { return res.status(404).json(false); }
 					obj.from = _.pluck(references, "from");
-					
+
 					Reference.find({from: req.object._id})
 						.lean()
 						.populate('to')

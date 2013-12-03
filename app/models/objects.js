@@ -23,5 +23,5 @@ ObjectSchema.plugin(elmongo);
 var Objects = mongoose.model('Object', ObjectSchema);
 
 Objects.sync(function (err) {
-	console.log("data ready");
-})
+	console.log("index ready");
+});
