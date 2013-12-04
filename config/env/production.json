@@ -4,9 +4,7 @@
     "elasticOptions": {
         "host": "localhost",
         "port": 9200,
-        "secure": false,
-        "index": "bool",
-        "type": "object"
+        "secure": false
     },
     "app": {
         "name": "MEAN - A Modern Stack - Production"
