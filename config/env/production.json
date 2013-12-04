@@ -1,5 +1,6 @@
 {
     "db": "mongodb://localhost/booda",
+    "port": 3001,
     "elasticOptions": {
         "host": "localhost",
         "port": 9200,
