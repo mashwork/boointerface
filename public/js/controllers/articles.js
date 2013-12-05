@@ -112,6 +112,7 @@ angular.module('mean.articles').controller('ObjectsIndexController', [
                         {}
                     );
 
+                    console.log("refData.references = %j", refData.references);
                     $scope.data.links = _.map(refData.references, function (link) {
                         return {source: link.to.name, target: link.from.name, type: "is"}; 
                     });

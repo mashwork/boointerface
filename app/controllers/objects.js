@@ -10,10 +10,17 @@ var mongoose = require('mongoose'),
     url = require('url');
 
 function createReferncesArray (objId, refType, otherRefType, refObjectArray, callback) {
+	console.log("objId = %j", objId);
+	console.log("refType = %j", refType);
+	console.log("otherRefType = %j", otherRefType);
+	console.log("refObjectArray = %j", refObjectArray);
 	async.map(
 		refObjectArray,
 		function (refObject, iterCallback) {
+			delete refObject._id;
 			Obj.findOneAndUpdate({name: refObject.name}, refObject, {upsert: true}, function  (err, typeObject) {
+				console.log("err = %j", err);
+				console.log("typeObject = %j", typeObject);
 				var refCreateObject = {};
 				refCreateObject[refType] = objId;
 				refCreateObject[otherRefType] = typeObject._id;
@@ -26,6 +33,8 @@ function createReferncesArray (objId, refType, otherRefType, refObjectArray, cal
 
 function createNewReferencesAndObjects (obj, toObjects, fromObjects, callback) {
 	console.log("obj = %j", obj);
+	console.log("toObjects = %j", toObjects);
+	console.log("fromObjects = %j", fromObjects);
 	createReferncesArray(obj._id, "to", "from", fromObjects, function (err, refs) {
 		createReferncesArray(obj._id, "from", "to", toObjects, function (err, moreRefs) {
 			callback(err, refs.concat(moreRefs));
@@ -34,6 +43,7 @@ function createNewReferencesAndObjects (obj, toObjects, fromObjects, callback) {
 };
 
 exports.create = function(req, res) {
+	console.log("req.body = %j", req.body);
 	var fromReferences = req.body.from || [];
 	var toReferences = req.body.to || [];
 	delete req.body.from;

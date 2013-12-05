@@ -20,6 +20,7 @@ exports.fullReferences = function(req, res) {
 		.populate('from')
 		.populate('to')
 		.exec( function (err, refs) {
+			console.log("refs = %j", refs);
 			res.json({references: refs});
 		});
 };
