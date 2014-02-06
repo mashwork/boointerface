@@ -62,7 +62,7 @@ module.exports = function(app, passport, auth) {
 
     //Object Routes
     var objects = require('../app/controllers/objects');
-    app.get('/objects',  objects.all);
+    app.get('/objects',  auth.requiresLogin, objects.all);
     app.get('/object_search',  objects.search);
     app.post('/objects', objects.create);
     app.get('/objects/:objectId', objects.show);
