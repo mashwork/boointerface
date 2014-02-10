@@ -128,6 +128,16 @@ exports.show = function (req, res) {
 		});
 };
 
+exports.getByName = function(req, res){
+    Obj.find({name: req.params.objectName})
+        .exec(function(err, objs) {
+            console.log(objs);
+            if (err) { return res.status(404).json(false); }
+            return res.json({objs: objs[0]});
+        });
+};
+
+
 exports.all = function (req, res) {
 	var query = url.parse(req.url, true).query;
 	Obj.find({})
