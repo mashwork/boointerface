@@ -8,6 +8,13 @@ exports.requiresLogin = function(req, res, next) {
     next();
 };
 
+exports.requiresLoginOrCanvsApi =  function(req, res, next) {
+    if (req.cookies.canvsToken != "asopfdjpoaAOPJOP1128a478ASD54J" && !req.isAuthenticated()) {
+        return res.send(401, 'User is not authorized');
+    }
+    next();
+};
+
 /**
  * User authorizations routing middleware
  */

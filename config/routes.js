@@ -62,13 +62,13 @@ module.exports = function(app, passport, auth) {
 
     //Object Routes
     var objects = require('../app/controllers/objects');
-    app.get('/objects', auth.requiresLogin, objects.all);
-    app.get('/object_search',  objects.search);
-    app.post('/objects', objects.create);
-    app.get('/objects/:objectId', objects.show);
-    app.put('/objects/:objectId', objects.update);
-    app.get('/objects/name/:objectName', objects.getByName);
-    app.del('/objects/:objectId', objects.destroy);
+    app.get('/objects', auth.requiresLoginOrCanvsApi, objects.all);
+    app.get('/object_search', auth.requiresLoginOrCanvsApi, objects.search);
+    app.post('/objects', auth.requiresLoginOrCanvsApi, objects.create);
+    app.get('/objects/:objectId', auth.requiresLoginOrCanvsApi, objects.show);
+    app.put('/objects/:objectId', auth.requiresLoginOrCanvsApi, objects.update);
+    app.get('/objects/name/:objectName', auth.requiresLoginOrCanvsApi, objects.getByName);
+    app.del('/objects/:objectId', auth.requiresLoginOrCanvsApi, objects.destroy);
 
     //Finish with setting up the articleId param
     app.param('objectId', objects.object);
