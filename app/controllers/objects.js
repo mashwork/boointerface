@@ -113,7 +113,6 @@ exports.show = function (req, res) {
 					console.log("references = %j", references);
 					if (err) { return res.status(404).json(false); }
 					obj.from = _.pluck(references, "from");
-
 					Reference.find({from: req.object._id})
 						.lean()
 						.populate('to')
@@ -121,7 +120,7 @@ exports.show = function (req, res) {
 							console.log("references = %j", references);
 							if (err) { return res.status(404).json(false); }
 							obj.to = _.pluck(references, "to");
-
+                            console.log(obj);
 							res.json({obj: obj});
 						})
 				});
@@ -129,11 +128,23 @@ exports.show = function (req, res) {
 };
 
 exports.getByName = function(req, res){
-    Obj.find({name: req.params.objectName})
-        .exec(function(err, objs) {
-            console.log(objs);
+    Obj.findOne({name: req.params.objectName})
+        .exec(function(err, obj) {
             if (err) { return res.status(404).json(false); }
-            return res.json({objs: objs[0]});
+            if (!obj){ return res.json(false) }
+            Reference.find({from: obj._id})
+                .lean()
+                .populate('to')
+                .exec(function (err, references){
+                    if (err) { return res.status(404).json(false); }
+                    var r = references;
+                    if(r !== undefined){
+                        r = _.map(r, function(tmp){ return tmp.to.boolean })
+                    }
+                    obj = obj.toObject(); //Transform moongose object to object to attach properties
+                    obj.has_references_booleans = r; //Attach the boolean of the references
+                    return res.json({obj: obj, references: r});
+                })
         });
 };
 
