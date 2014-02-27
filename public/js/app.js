@@ -1,3 +1,3 @@
-window.app = angular.module('mean', ['ngCookies', 'ngResource', '$strap.directives', 'ui.bootstrap', 'ui.route', 'mean.system', 'mean.articles', 'mean.directives']);
+window.app = angular.module('mean', ['ngCookies', 'ngResource', 'ui.bootstrap', 'ngRoute', 'mean.system', 'mean.articles', 'mean.directives']);
 angular.module('mean.system', []);
 angular.module('mean.articles', []);
