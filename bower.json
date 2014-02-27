@@ -1,19 +1,18 @@
 {
-    "name": "mean",
-    "version": "0.1.0",
-    "dependencies": {
-        "bootstrap": "latest",
-        "angular": "latest",
-        "angular-resource": "latest",
-        "angular-route": "latest",
-        "angular-cookies": "latest",
-        "angular-bootstrap": "latest",
-        "angular-ui-utils": "latest",
-        "jquery": "latest",
-        "bootstrap": "latest",
-        "angular-strap": "latest",
-        "lodash": "latest",
-        "ng-textcomplete": "latest",
-        "d3": "latest"
-    }
+  "name": "mean",
+  "version": "0.1.0",
+  "dependencies": {
+    "bootstrap": "~3.1.1",
+    "angular": "~1.2.14-build.2339",
+    "angular-resource": "~1.2.14-build.2339",
+    "angular-route": "~1.2.14-build.2339",
+    "angular-cookies": "~1.2.14-build.2339",
+    "angular-bootstrap": "~0.10.0",
+    "angular-ui-utils": "~0.1.1",
+    "jquery": "~2.1.0",
+    "angular-strap": "~2.0.0-rc.3",
+    "lodash": "~2.4.1",
+    "ng-textcomplete": "~0.4.0",
+    "d3": "~3.4.3"
+  }
 }
